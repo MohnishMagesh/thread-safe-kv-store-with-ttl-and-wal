@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"sync"
 	"testing"
+	"time" // Added so we can pass a duration to Set
 )
 
 func TestKVStoreRaceCondition(t *testing.T) {
-	// 1. Initialize our unprotected store
+	// 1. Initialize our store (Now using the Entry struct)
 	s := KVStore{
-		store: make(map[string][]byte),
+		store: make(map[string]Entry),
 	}
 
 	var wg sync.WaitGroup
@@ -20,7 +21,8 @@ func TestKVStoreRaceCondition(t *testing.T) {
 		go func(val int) {
 			defer wg.Done()
 			key := fmt.Sprintf("key_%d", val%10) // Overlapping keys
-			s.Set(key, []byte("data"))
+			// Updated Set call to include the new TTL parameter
+			s.Set(key, []byte("data"), 5*time.Minute)
 		}(i)
 	}
 
@@ -34,6 +36,6 @@ func TestKVStoreRaceCondition(t *testing.T) {
 		}(i)
 	}
 
-	// 4. Wait for all 200 goroutines to finish crashing into each other
+	// 4. Wait for all 200 goroutines to finish
 	wg.Wait()
 }
