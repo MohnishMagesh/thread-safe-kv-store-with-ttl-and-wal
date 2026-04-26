@@ -13,7 +13,7 @@ func TestKVStoreRaceCondition(t *testing.T) {
 	// 1. Initialize using the constructor so the map and channels are ready,
 	// and the background sweeper starts running. We set a long sweep interval
 	// so it doesn't interfere with our immediate race test.
-	s := NewKVStore(10 * time.Minute)
+	s, _ := NewKVStore(10 * time.Minute)
 
 	// 2. CRITICAL: We must close the store when the test finishes so the
 	// background sweeper goroutine doesn't leak into other tests.

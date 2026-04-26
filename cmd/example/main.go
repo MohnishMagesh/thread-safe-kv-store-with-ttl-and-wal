@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	s := kvstore.NewKVStore(10 * time.Second)
+	s, _ := kvstore.NewKVStore(10 * time.Second)
 	defer s.Close()
 
 	footballPlayers := []string{"Ronaldo", "Messi", "Neymar", "Mbappe", "Salah", "Kane", "Lewandowski", "De Bruyne", "Modric", "Van Dijk"}
